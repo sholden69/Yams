@@ -3,24 +3,166 @@
   <head>
     <meta charset="utf-8">
     <script src="app.js"></script>
+    <link href="./Yams.css" type="text/css" rel="stylesheet" />
     <style>body { font-size: 1.5em; }</style>
     <title>Yams</title>
   </head>
   <body>
-    <h1>This will be my Yams page - yeah baby</h1>
+    <h1>Yams - Bring on the javascript</h1>
     <div id="nameCalculator">
       <div>
         Your name: <input type="text" id="name">
       </div>
       <div id="output"></div>
     </div>
+    <!Dice section>
+    <p>
     <div id="Dice">
       <img src="DiceOne.png">
+      <input type="checkbox" name="DiceOne" value="">
       <img src="DiceTwo.png">
+        <input type="checkbox" name="DiceTwo" value="" >
       <img src="DiceThree.png">
+        <input type="checkbox" name="DiceThree" value="">
       <img src="DiceFour.png">
+        <input type="checkbox" name="DiceFour" value="">
       <img src="DiceFive.png">
+        <input type="checkbox" name="DiceFive" value="">
       <img src="DiceSix.png">
+        <input type="checkbox" name="DiceSix" value="">
     </div>
+  </p>
+    <! Buttons down here>
+  <p>
+    <div id="buttons">
+      <button>Reset</button>
+      <button>Throw</button>
+    </div>
+  </p>
+    <!Scorecard>
+    <div id="Scorecard">
+      <table>
+       <tr>
+         <th></th>
+         <th scope ="col">Player 1</th>
+         <th scope ="col">Player 2</th>
+         <th scope ="col">Player 3</th>
+         <th scope ="col">Player 4</th>
+       </tr>
+       <tr>
+         <th scope="row">1s</th>
+         <td class="score">0</td>
+         <td class="score">0</td>
+         <td class="score">0</td>
+         <td class="score">0</td>
+        </tr>
+        <tr>
+          <th scope="row">2s</th>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+        </tr>
+        <tr>
+           <th scope="row">3s</th>
+           <td class="score">0</td>
+           <td class="score">0</td>
+           <td class="score">0</td>
+           <td class="score">0</td>
+       </tr>
+       <tr>
+          <th scope="row">4s</th>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+       </tr>
+       <tr>
+          <th scope="row">5s</th>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+       </tr>
+       <tr>
+          <th scope="row">6s</th>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+          <td class="score">0</td>
+      </tr>
+      <tr>
+         <th scope="row">Total</th>
+         <td class="score">0</td>
+         <td class="score">0</td>
+         <td class="score">0</td>
+         <td class="score">0</td>
+     </tr>
+     <tr class="total">
+        <th scope="row">Bonus</th>
+        <td class="score">0</td>
+        <td class="score">0</td>
+        <td class="score">0</td>
+        <td class="score">0</td>
+    </tr>
+    <tr class="total">
+       <th scope="row">Total Above Line</th>
+       <td class="score">0</td>
+       <td class="score">0</td>
+       <td class="score">0</td>
+       <td class="score">0</td>
+   </tr>
+   <tr>
+     <th scope="row">Full House (20)</th>
+     <td class="score">0</td>
+     <td class="score">0</td>
+     <td class="score">0</td>
+     <td class="score">0</td>
+    </tr>
+    <tr>
+      <th scope="row">Run (30)</th>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+    </tr>
+    <tr>
+       <th scope="row">High</th>
+       <td class="score">0</td>
+       <td class="score">0</td>
+       <td class="score">0</td>
+       <td class="score">0</td>
+   </tr>
+   <tr>
+      <th scope="row">Low</th>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+   </tr>
+   <tr>
+      <th scope="row">Yams</th>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+   </tr>
+   <tr class="total">
+      <th scope="row">Total Below Line</th>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+      <td class="score">0</td>
+   </tr>
+   <tr class="total">
+     <th scope="row">Grand Total</th>
+     <td class="score">0</td>
+     <td class="score">0</td>
+     <td class="score">0</td>
+     <td class="score">0</td>
+   </tr>
+      </table>
+    </div>
+
   </body>
 </html>
