@@ -13,8 +13,7 @@ function initialisePlay() {
     aDice=new Object();
     aDice.isLocked=false;
     aDice.throw=function() {
-      console.log(this.isLocked)
-      if (this.isLocked==false) {
+        if (this.isLocked==false) {
         this.value=Math.floor(Math.random()*6) + 1;
       };
     }
@@ -58,7 +57,6 @@ function drawDice() {
   var newHTML="";
   for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
-    console.log(thisOne.isLocked);
     newHTML=newHTML+"<img src="+"'" + thisOne.imageName() +"'> ";
     newHTML=newHTML+'  <input type="checkbox" name="DiceTwo" class="diceCheck" value=""';
     if (thisOne.isLocked) {
@@ -81,19 +79,21 @@ function contentLoaded(event) {
 
 
 function diceThrow() {
+console.log("diceThrow ",throwNumber);
 captureLockStatus(); // get the locks first
   for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
     thisOne.throw();
     drawDice();
 }
+console.log(throwNumber)
 throwNumber++; //increment the number of the throw
 if (throwNumber==3) {
-    document.getElementById('statusBox').innerHTML="last throw";
+    document.getElementById('statusBox').innerHTML="that's it";
     document.getElementById('throw').disabled=true;
   }
   else {
-    document.getElementById('statusBox').innerHTML="throw" + throwNumber;
+    document.getElementById('statusBox').innerHTML="that was throw" + throwNumber;
   }
 }
 
@@ -101,7 +101,17 @@ if (throwNumber==3) {
 function diceReset() {
   throwNumber=1;
   document.getElementById('throw').disabled=false;
-  initialisePlay();
+  //reset all the locks on the checkboxed - NOT WORKING
+  for (var i=0;i<numDice; i++) {
+    myDie[i].isLocked=false;
+  }
+  var els = document.getElementsByClassName('diceCheck');
+  for (var i=0; i<els.length; i++) {
+    els[i].checked=false;
+  }
+
+  diceThrow();
+  throwNumber=1;
   drawDice();
   document.getElementById('statusBox').innerHTML="here's your first throw";
 }
