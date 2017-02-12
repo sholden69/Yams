@@ -5,9 +5,11 @@ var student = {
 };
 
 var myDie=[];
+var numDice=5;
+var throwNumber=1; //this will go from 1..3
 
 function initialisePlay() {
-  for (var i = 1; i<=6; i++) {
+  for (var i = 1; i<=numDice; i++) {
     aDice=new Object();
     aDice.isLocked=false;
     aDice.throw=function() {
@@ -45,17 +47,20 @@ function initialisePlay() {
 
 function captureLockStatus() {
   // start HERE next time to scan the checkbutton status and update isLocked
-
+  var els = document.getElementsByClassName('diceCheck');
+  for (var i=0; i<els.length; i++) {
+    myDie[i].isLocked=els[i].checked;
+  }
 }
 
 function drawDice() {
   var el=document.getElementById('diceSection');
   var newHTML="";
-  for (var i=1; i<=6;i++) {
+  for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
     console.log(thisOne.isLocked);
     newHTML=newHTML+"<img src="+"'" + thisOne.imageName() +"'> ";
-    newHTML=newHTML+'  <input type="checkbox" name="DiceTwo" value=""';
+    newHTML=newHTML+'  <input type="checkbox" name="DiceTwo" class="diceCheck" value=""';
     if (thisOne.isLocked) {
       newHTML=newHTML+' checked="checked"';
     }
@@ -69,6 +74,7 @@ document.addEventListener('DOMContentLoaded', contentLoaded);
 function contentLoaded(event) {
   document.getElementById('name').addEventListener("keyup", keyUp);
   document.getElementById('throw').addEventListener("click", diceThrow);
+  document.getElementById('reset').addEventListener("click", diceReset);
   initialisePlay();
   drawDice();
 }
@@ -76,12 +82,28 @@ function contentLoaded(event) {
 
 function diceThrow() {
 captureLockStatus(); // get the locks first
-  for (var i=1; i<=6;i++) {
+  for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
     thisOne.throw();
     drawDice();
 }
+throwNumber++; //increment the number of the throw
+if (throwNumber==3) {
+    document.getElementById('statusBox').innerHTML="last throw";
+    document.getElementById('throw').disabled=true;
+  }
+  else {
+    document.getElementById('statusBox').innerHTML="throw" + throwNumber;
+  }
+}
 
+
+function diceReset() {
+  throwNumber=1;
+  document.getElementById('throw').disabled=false;
+  initialisePlay();
+  drawDice();
+  document.getElementById('statusBox').innerHTML="here's your first throw";
 }
 
 function keyUp(event) {
