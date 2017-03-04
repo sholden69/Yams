@@ -4,9 +4,30 @@ var student = {
   type: "student"
 };
 
+
+var scoreboard = [
+{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:2, rowText:"2s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:3, rowText:"4s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:4, rowText:"5s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:5, rowText:"6s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:6, rowText:"Bonus", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:7, rowText:"Above Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:8, rowText:"Full House", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:9, rowText:"Run ", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:10, rowText:"High", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:11, rowText:"Low", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:12, rowText:"Yams", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:13, rowText:"Below Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:14, rowText:"Grand Total", sc1:0, sc2:0, sc3:0, sc4:0}
+];
+
+
 var myDie=[];
 var numDice=5;
 var throwNumber=0; //this will go from 1..3
+var numPlayers=4;
+var currentPlayer=1;
 
 function initialisePlay() {
   for (var i = 1; i<=numDice; i++) {
@@ -43,16 +64,15 @@ function initialisePlay() {
           break;
       }
     }
-
-
-
     aDice.value=0;
     myDie.push(aDice);
   }
   diceReset();
-  myDie.sort(function(a,b) {
+  drawScoreBoard();
+
+  /*myDie.sort(function(a,b) {
     return a.value-b.value;
-  });
+  });*/
 }
 
 function captureLockStatus() {
@@ -62,7 +82,9 @@ function captureLockStatus() {
     myDie[i].isLocked=els[i].checked;
   }
 }
+//------------------------------------------------------------------
 
+// Drawing functions: Draw the dice from the array
 function drawDice() {
   var el=document.getElementById('diceSection');
   var newHTML="";
@@ -78,6 +100,32 @@ function drawDice() {
   el.innerHTML=newHTML;
 }
 
+function drawScoreBoard() {
+  var el=document.getElementById('Scorecard');
+  var newHTML="  <table>    <tr>      <th></th>"
+  for (var i=1;i<=numPlayers;i++){
+    newHTML=newHTML+"     <th scope ='col'>Player "+i+"</th> ";
+  }
+//  newHTML=newHTML+"     <th scope ='col'>Player 1</th>     <th scope ='col'>Player 2</th>     <th scope ='col'>Player 3</th>     <th scope ='col'>Player 4</th>   </tr>";
+//{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
+  console.log(Object.keys(scoreboard));
+  for (var iRow=0;iRow<=13;iRow++) {
+    if (iRow==5 || iRow==6 || iRow==12 || iRow==13) {
+      newHTML=newHTML+"<tr class='total'>     <th scope='row'>";
+    }
+    else {
+      newHTML=newHTML+"<tr>      <th scope='row'>";
+    }
+    newHTML=newHTML+scoreboard[iRow].rowText+"</th>";
+    //if index 6,7,13,14 then it's a total row
+
+    newHTML=newHTML+"<td class='score'>0</td>      <td class='score'>0</td>      <td class='score'>0</td>      <td class='score'>0</td>     </tr>    "
+  }
+  el.innerHTML=newHTML;
+}
+
+//-------------------------------------------------------------
+// event listeners
 document.addEventListener('DOMContentLoaded', contentLoaded);
 
 function contentLoaded(event) {
@@ -97,25 +145,57 @@ function compare(a,b) {
   return 0;
 }
 
+function turnOver() {
+  var newHTML="player "+currentPlayer+":that's it";
+
+  myDie.sort(compare);
+  drawDice();
+  document.getElementById('throw').disabled=true;
+// Try and work out the scores
+  if (IsYams()) {
+     newHTML=newHTML+"Yams + <BR>"
+  }
+  if (isStraight()) {
+     newHTML=newHTML+" Straight + <BR>"
+  }
+  if (IsFullHouse()) {
+     newHTML=newHTML+" FullHouse + <BR>"
+  }
+  newHTML=newHTML+" Total" + dieTotal() + "<BR>";
+
+//Check each digit
+var res=0;
+  for (var i=1; i<=6; i++){
+      res=CountDigits(i);
+      if (res>0) {
+        newHTML=newHTML+res+"* "+i+" <BR>";
+    }
+  }
+  document.getElementById('statusBox').innerHTML=newHTML;
+
+// move on to the next player  currentPlayer++;
+  currentPlayer++;
+  if (currentPlayer>numPlayers)
+    currentPlayer=1;
+}
+
+
 function diceThrow() {
+  drawScoreBoard();
   console.log("diceThrow ",throwNumber);
   captureLockStatus(); // get the locks first
   for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
     thisOne.throw();
     drawDice();
-}
+    }
 throwNumber++; //increment the number of the throw
 if (throwNumber==3) {
-    document.getElementById('statusBox').innerHTML="that's it";
-    myDie.sort(compare);
-    console.log("sorted");
-    drawDice();
-    document.getElementById('throw').disabled=true;
-  }
-  else {
-    document.getElementById('statusBox').innerHTML="that was throw" + throwNumber;
-  }
+   turnOver();
+ }
+  else
+  {  document.getElementById('statusBox').innerHTML="player "+currentPlayer+":that was throw" + throwNumber;
+}
 }
 
 
@@ -131,17 +211,94 @@ function diceReset() {
   for (var i=0; i<els.length; i++) {
     els[i].checked=false;
   }
-
   drawDice();
-  document.getElementById('statusBox').innerHTML="press throw to start";
+  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+" press throw to start";
 }
 
 function keyUp(event) {
   calculateNumericOutput();
 }
 
+//-----------------------------------------
+function CountDigits(digVal) {
+//-- count the occurrences of i in the hand. Used for above the board.
+  var digCount=0;
+  for (var i=0;i<numDice; i++) {
+    if (myDie[i].value==digVal)
+      digCount++;
+  }
+  return digCount;
+}
+function IsFullHouse() {
+//-- returns true if the sorted hand is a sequence of 2+3 or 3+2
+//look for a run of 3+2 or 2+3
 
+// count the first run
+var legSeqCounter=0; //count sequences of 2 or 3
+var seqLength=1;
+var seqTwo=false;
+var seqThree=false;
+var myDig=myDie[0].value; //that's the current digit
 
+for (var i=1;i<numDice; i++) {
+  if (myDie[i].value==myDig) {  //increment the sequence length
+      seqLength++
+  }
+  if ((myDie[i].value!=myDig) || (i==4)) {  //new sequence or last digit
+     if (seqLength==2 || seqLength==3) {
+        if (seqLength==2) {
+            seqTwo=true;
+        }
+        if (seqLength==3) {
+            seqThree=true;
+        }
+        legSeqCounter++;
+      }
+     seqLength=1; // reset the sequence
+     myDig=myDie[i].value;  //change the digit we're tracking
+  }
+}
+  return ((legSeqCounter==2) && seqTwo && seqThree)
+}
+
+function isStraight() {
+//-- returns true is the sorted hand goes in sequence
+ var myDig=myDie[0].value;
+ for (var i=1;i<numDice; i++) {
+   if (myDie[i].value!=myDig+1)
+     return false;
+  else {
+      myDig=myDie[i].value;
+  }
+ }
+ return true;
+}
+
+function dieTotal() {
+//-- returns the total of all the die
+  var total=0
+   for (var i=0;i<numDice; i++) {
+     total=total+myDie[i].value;
+}
+  return total;
+}
+
+function IsYams() {
+//-- returns true if the hand is Yams.
+var myDig=myDie[0].value;
+for (var i=1;i<numDice; i++) {
+  if (myDie[i].value!=myDig)
+    return false;
+ else {
+     myDig=myDie[i].value;
+ }
+}
+return true;
+}
+
+//----------------------------------------------------------------
+
+// Old crap from the original web page
 function calculateNumericOutput() {
   student.name = document.getElementById('name').value;
 
