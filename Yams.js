@@ -8,18 +8,19 @@ var student = {
 var scoreboard = [
 {index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
 {index:2, rowText:"2s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:3, rowText:"4s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:4, rowText:"5s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:5, rowText:"6s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:6, rowText:"Bonus", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:7, rowText:"Above Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:8, rowText:"Full House", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:9, rowText:"Run ", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:10, rowText:"High", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:11, rowText:"Low", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:12, rowText:"Yams", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:13, rowText:"Below Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:14, rowText:"Grand Total", sc1:0, sc2:0, sc3:0, sc4:0}
+{index:3, rowText:"3s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:4, rowText:"4s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:5, rowText:"5s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:6, rowText:"6s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:7, rowText:"Bonus", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:8, rowText:"Above Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:9, rowText:"Full House", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:10, rowText:"Run ", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:11, rowText:"High", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:12, rowText:"Low", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:13, rowText:"Yams", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:14, rowText:"Below Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:15, rowText:"Grand Total", sc1:0, sc2:0, sc3:0, sc4:0}
 ];
 
 
@@ -28,6 +29,9 @@ var numDice=5;
 var throwNumber=0; //this will go from 1..3
 var numPlayers=4;
 var currentPlayer=1;
+var currentRound=1;
+
+
 
 function initialisePlay() {
   for (var i = 1; i<=numDice; i++) {
@@ -69,6 +73,7 @@ function initialisePlay() {
   }
   diceReset();
   drawScoreBoard();
+  currentRound=1;
 
   /*myDie.sort(function(a,b) {
     return a.value-b.value;
@@ -109,8 +114,8 @@ function drawScoreBoard() {
 //  newHTML=newHTML+"     <th scope ='col'>Player 1</th>     <th scope ='col'>Player 2</th>     <th scope ='col'>Player 3</th>     <th scope ='col'>Player 4</th>   </tr>";
 //{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
   console.log(Object.keys(scoreboard));
-  for (var iRow=0;iRow<=13;iRow++) {
-    if (iRow==5 || iRow==6 || iRow==12 || iRow==13) {
+  for (var iRow=0;iRow<=14;iRow++) {
+    if (iRow==6 || iRow==7 || iRow==13 || iRow==14) {
       newHTML=newHTML+"<tr class='total'>     <th scope='row'>";
     }
     else {
@@ -119,7 +124,11 @@ function drawScoreBoard() {
     newHTML=newHTML+scoreboard[iRow].rowText+"</th>";
     //if index 6,7,13,14 then it's a total row
 
-    newHTML=newHTML+"<td class='score'>0</td>      <td class='score'>0</td>      <td class='score'>0</td>      <td class='score'>0</td>     </tr>    "
+    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc1+"</td>";
+    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc2+"</td>";
+    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc3+"</td>";
+    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc4+"</td>";
+    newHTML=newHTML+"</tr>";
   }
   el.innerHTML=newHTML;
 }
@@ -132,6 +141,7 @@ function contentLoaded(event) {
   document.getElementById('name').addEventListener("keyup", keyUp);
   document.getElementById('throw').addEventListener("click", diceThrow);
   document.getElementById('reset').addEventListener("click", diceReset);
+  document.getElementById('score').addEventListener("click", scoreTurn);
   initialisePlay();
   drawDice();
 }
@@ -151,32 +161,6 @@ function turnOver() {
   myDie.sort(compare);
   drawDice();
   document.getElementById('throw').disabled=true;
-// Try and work out the scores
-  if (IsYams()) {
-     newHTML=newHTML+"Yams + <BR>"
-  }
-  if (isStraight()) {
-     newHTML=newHTML+" Straight + <BR>"
-  }
-  if (IsFullHouse()) {
-     newHTML=newHTML+" FullHouse + <BR>"
-  }
-  newHTML=newHTML+" Total" + dieTotal() + "<BR>";
-
-//Check each digit
-var res=0;
-  for (var i=1; i<=6; i++){
-      res=CountDigits(i);
-      if (res>0) {
-        newHTML=newHTML+res+"* "+i+" <BR>";
-    }
-  }
-  document.getElementById('statusBox').innerHTML=newHTML;
-
-// move on to the next player  currentPlayer++;
-  currentPlayer++;
-  if (currentPlayer>numPlayers)
-    currentPlayer=1;
 }
 
 
@@ -229,7 +213,7 @@ function CountDigits(digVal) {
   }
   return digCount;
 }
-function IsFullHouse() {
+function isFullHouse() {
 //-- returns true if the sorted hand is a sequence of 2+3 or 3+2
 //look for a run of 3+2 or 2+3
 
@@ -283,7 +267,7 @@ function dieTotal() {
   return total;
 }
 
-function IsYams() {
+function isYams() {
 //-- returns true if the hand is Yams.
 var myDig=myDie[0].value;
 for (var i=1;i<numDice; i++) {
@@ -295,6 +279,170 @@ for (var i=1;i<numDice; i++) {
 }
 return true;
 }
+
+function scoreTurn() {
+  // Takes the current dice and settings from the scorechoice div and updates scoreboard = [
+//{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
+
+myDie.sort(compare);
+drawDice();
+
+  //first pick up the radio button that is selected
+  var radioButtons = document.getElementsByName("scorechoice");
+   for (var x = 0; x < radioButtons.length; x ++) {
+     if (radioButtons[x].checked) {
+        var mySel=radioButtons[x].value
+      }
+    }
+
+   // do a select case to update the right row in scoreboard for this player
+  var thisScore=0;
+  var index=0;
+   switch (mySel) {
+     case "1s":
+       index=1;
+       thisScore=CountDigits(1)*1;
+       break;
+     case "2s":
+        index=2;
+        thisScore=CountDigits(2)*2;
+        break;
+     case "3s":
+        index=3;
+        thisScore=CountDigits(3)*3;
+        break;
+     case "4s":
+        index=4;
+        thisScore=CountDigits(4)*4;
+        break;
+     case "5s":
+        index=5;
+        thisScore=CountDigits(5)*5;
+       break;
+    case "6s":
+      index=6;
+      thisScore=CountDigits(6)*6;
+      break;
+    case "Full House":
+      index=9;
+      if (isFullHouse()) {
+        thisScore=20; }
+        break;
+    case "Run":
+      index=10;
+      if (isStraight() ) {
+        thisScore=30;
+      }
+      break;
+    case "High":
+      index=11;
+      thisScore=dieTotal();
+      break;
+    case "Low":
+      index=12;
+      thisScore=dieTotal();
+      break;
+    case "Yams":
+      index=13;
+      if (isYams() ) {
+        thisScore=50;
+        }
+      break;
+   }
+   switch(currentPlayer) {
+     case 1:
+       scoreboard[index-1].sc1=thisScore
+       break;
+    case 2:
+       scoreboard[index-1].sc2=thisScore
+     break;
+     case 3:
+       scoreboard[index-1].sc3=thisScore
+       break;
+    case 4:
+      scoreboard[index-1].sc4=thisScore
+      break;
+   }
+
+calcTotals();
+drawScoreBoard();
+// move on to the next player  currentPlayer++;
+  currentPlayer++;
+  if (currentPlayer>numPlayers) {
+    currentRound++;
+    if (currentRound>11) {
+        alert("Game Over")
+    }
+    currentPlayer=1;
+}
+  diceReset();
+//Fix up the buttons for the next player
+
+}
+
+function calcTotals() {
+//run up the totals
+     var aboveTheLine=[0,0,0,0];
+     var belowTheLine=[0,0,0,0];
+     for (var i=0;i<=13;i++){
+       if (i<=5) {
+         //we are above the Line
+         aboveTheLine[0]=aboveTheLine[0]+scoreboard[i].sc1;
+         aboveTheLine[1]=aboveTheLine[1]+scoreboard[i].sc2;
+         aboveTheLine[2]=aboveTheLine[2]+scoreboard[i].sc3;
+         aboveTheLine[3]=aboveTheLine[3]+scoreboard[i].sc4;
+       }
+        if (i>=8 && i<=12) {
+          // we are below the line
+          belowTheLine[0]=belowTheLine[0]+scoreboard[i].sc1;
+          belowTheLine[1]=belowTheLine[1]+scoreboard[i].sc2;
+          belowTheLine[2]=belowTheLine[2]+scoreboard[i].sc3;
+          belowTheLine[3]=belowTheLine[3]+scoreboard[i].sc4;
+        }
+     }
+     console.log("Scoring this round");
+     console.log("ABL:",aboveTheLine);
+     console.log("BTL:",belowTheLine);
+
+
+
+     // now update bonus
+     if (aboveTheLine[0]>=60) {
+       scoreboard[6].sc1=40;
+     }
+     if (aboveTheLine[1]>=60) {
+       scoreboard[6].sc2=40;
+     }
+     if (aboveTheLine[2]>=60) {
+       scoreboard[6].sc3=40;
+     }
+     if (aboveTheLine[3]>=60) {
+       scoreboard[6].sc4=40;
+     }
+
+    //now update the ABL totals
+    scoreboard[7].sc1=scoreboard[6].sc1+aboveTheLine[0];
+    scoreboard[7].sc2=scoreboard[6].sc2+aboveTheLine[1];
+    scoreboard[7].sc3=scoreboard[6].sc3+aboveTheLine[2];
+    scoreboard[7].sc4=scoreboard[6].sc4+aboveTheLine[3];
+
+
+    //now update the BLL and grand totals
+    scoreboard[13].sc1=belowTheLine[0];
+    scoreboard[13].sc2=belowTheLine[1];
+    scoreboard[13].sc3=belowTheLine[2];
+    scoreboard[13].sc4=belowTheLine[3];
+
+
+  //grand totals
+  scoreboard[14].sc1=scoreboard[7].sc1+scoreboard[13].sc1;
+  scoreboard[14].sc2=scoreboard[7].sc2+scoreboard[13].sc2;
+  scoreboard[14].sc3=scoreboard[7].sc3+scoreboard[13].sc3;
+  scoreboard[14].sc4=scoreboard[7].sc4+scoreboard[13].sc4;
+
+}
+
+
 
 //----------------------------------------------------------------
 
