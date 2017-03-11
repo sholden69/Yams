@@ -6,19 +6,19 @@ var student = {
 
 
 var scoreboard = [
-{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:2, rowText:"2s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:3, rowText:"3s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:4, rowText:"4s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:5, rowText:"5s", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:6, rowText:"6s", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:1, rowText:"1s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:2, rowText:"2s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:3, rowText:"3s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:4, rowText:"4s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:5, rowText:"5s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:6, rowText:"6s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
 {index:7, rowText:"Bonus", sc1:0, sc2:0, sc3:0, sc4:0},
 {index:8, rowText:"Above Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:9, rowText:"Full House", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:10, rowText:"Run ", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:11, rowText:"High", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:12, rowText:"Low", sc1:0, sc2:0, sc3:0, sc4:0},
-{index:13, rowText:"Yams", sc1:0, sc2:0, sc3:0, sc4:0},
+{index:9, rowText:"Full House", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:10, rowText:"Run", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:11, rowText:"High", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:12, rowText:"Low", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+{index:13, rowText:"Yams", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
 {index:14, rowText:"Below Line Total", sc1:0, sc2:0, sc3:0, sc4:0},
 {index:15, rowText:"Grand Total", sc1:0, sc2:0, sc3:0, sc4:0}
 ];
@@ -109,10 +109,12 @@ function drawScoreBoard() {
   var el=document.getElementById('Scorecard');
   var newHTML="  <table>    <tr>      <th></th>"
   for (var i=1;i<=numPlayers;i++){
-    newHTML=newHTML+"     <th scope ='col'>Player "+i+"</th> ";
+    newHTML=newHTML+"     <th scope ='col'>Player "+i+"</th>";
   }
+  newHTML=newHTML+"  <th scope='col'>Score </th>";
+
 //  newHTML=newHTML+"     <th scope ='col'>Player 1</th>     <th scope ='col'>Player 2</th>     <th scope ='col'>Player 3</th>     <th scope ='col'>Player 4</th>   </tr>";
-//{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
+//{index:1, rowText:"1s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
   console.log(Object.keys(scoreboard));
   for (var iRow=0;iRow<=14;iRow++) {
     if (iRow==6 || iRow==7 || iRow==13 || iRow==14) {
@@ -124,12 +126,59 @@ function drawScoreBoard() {
     newHTML=newHTML+scoreboard[iRow].rowText+"</th>";
     //if index 6,7,13,14 then it's a total row
 
-    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc1+"</td>";
-    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc2+"</td>";
-    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc3+"</td>";
-    newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc4+"</td>";
-    newHTML=newHTML+"</tr>";
+    if (scoreboard[iRow].sc1==-1)  {
+      newHTML=newHTML+"<td class='score'> </td>";
+    }
+    else {
+      newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc1+"</td>";
+    }
+
+    if (scoreboard[iRow].sc2==-1)  {
+      newHTML=newHTML+"<td class='score'> </td>";
+    }
+    else {
+      newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc2+"</td>";
+    }
+    if (scoreboard[iRow].sc3==-1)  {
+      newHTML=newHTML+"<td class='score'> </td>";
+    }
+    else {
+      newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc3+"</td>";
+    }
+    if (scoreboard[iRow].sc4==-1)  {
+      newHTML=newHTML+"<td class='score'> </td>";
+    }
+    else {
+      newHTML=newHTML+"<td class='score'>"+scoreboard[iRow].sc4+"</td>";
+    }
+// now add the right radio button for the score on non total rows
+   if (iRow!=6 && iRow!=7 && iRow!=13 && iRow!=14) {
+     var okToScore=false;
+       switch (currentPlayer) {
+         case 1:
+           okToScore=(scoreboard[iRow].sc1==-1);
+           break;
+         case 2:
+           okToScore=(scoreboard[iRow].sc2==-1);
+           break;
+          case 3:
+           okToScore=(scoreboard[iRow].sc3==-1);
+           break;
+          case 4:
+           okToScore=(scoreboard[iRow].sc4==-1);
+          break;
+       }
+       //special check to disable high if score not greater than a low
+       //if ((iRow==10) &&  dieTotal <= Low Score scoreboard[9].scn ) then false
+
+       if (okToScore) {
+         newHTML=newHTML+"<td>  <input type='radio' name='scorechoice' value ='"  + scoreboard[iRow].rowText+"'/> ";
+       }
+       else {
+         newHTML=newHTML+"<td> ";
+       }
   }
+}
   el.innerHTML=newHTML;
 }
 
@@ -138,7 +187,6 @@ function drawScoreBoard() {
 document.addEventListener('DOMContentLoaded', contentLoaded);
 
 function contentLoaded(event) {
-  document.getElementById('name').addEventListener("keyup", keyUp);
   document.getElementById('throw').addEventListener("click", diceThrow);
   document.getElementById('reset').addEventListener("click", diceReset);
   document.getElementById('score').addEventListener("click", scoreTurn);
@@ -161,6 +209,7 @@ function turnOver() {
   myDie.sort(compare);
   drawDice();
   document.getElementById('throw').disabled=true;
+  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+" - please score your turn";
 }
 
 
@@ -282,7 +331,7 @@ return true;
 
 function scoreTurn() {
   // Takes the current dice and settings from the scorechoice div and updates scoreboard = [
-//{index:1, rowText:"1s", sc1:0, sc2:0, sc3:0, sc4:0},
+//{index:1, rowText:"1s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
 
 myDie.sort(compare);
 drawDice();
@@ -387,16 +436,24 @@ function calcTotals() {
      for (var i=0;i<=13;i++){
        if (i<=5) {
          //we are above the Line
-         aboveTheLine[0]=aboveTheLine[0]+scoreboard[i].sc1;
-         aboveTheLine[1]=aboveTheLine[1]+scoreboard[i].sc2;
-         aboveTheLine[2]=aboveTheLine[2]+scoreboard[i].sc3;
-         aboveTheLine[3]=aboveTheLine[3]+scoreboard[i].sc4;
+         if (scoreboard[i].sc1>0)
+           aboveTheLine[0]=aboveTheLine[0]+scoreboard[i].sc1;
+         if (scoreboard[i].sc2>0)
+           aboveTheLine[1]=aboveTheLine[1]+scoreboard[i].sc2;
+         if (scoreboard[i].sc3>0)
+           aboveTheLine[2]=aboveTheLine[2]+scoreboard[i].sc3;
+         if (scoreboard[i].sc4>0)
+           aboveTheLine[3]=aboveTheLine[3]+scoreboard[i].sc4;
        }
         if (i>=8 && i<=12) {
           // we are below the line
+         if (scoreboard[i].sc1>0)
           belowTheLine[0]=belowTheLine[0]+scoreboard[i].sc1;
+         if (scoreboard[i].sc2>0)
           belowTheLine[1]=belowTheLine[1]+scoreboard[i].sc2;
+         if (scoreboard[i].sc3>0)
           belowTheLine[2]=belowTheLine[2]+scoreboard[i].sc3;
+         if (scoreboard[i].sc4>0)
           belowTheLine[3]=belowTheLine[3]+scoreboard[i].sc4;
         }
      }
@@ -440,22 +497,4 @@ function calcTotals() {
   scoreboard[14].sc3=scoreboard[7].sc3+scoreboard[13].sc3;
   scoreboard[14].sc4=scoreboard[7].sc4+scoreboard[13].sc4;
 
-}
-
-
-
-//----------------------------------------------------------------
-
-// Old crap from the original web page
-function calculateNumericOutput() {
-  student.name = document.getElementById('name').value;
-
-  var totalNameValue = 0;
-  for (var i = 0; i < student.name.length; i++) {
-    totalNameValue += student.name.charCodeAt(i);
-  }
-
-  // Insert result into page
-  var output = "Total Numeric value of person's name is " + totalNameValue;
-  document.getElementById('output').innerText = output;
 }
