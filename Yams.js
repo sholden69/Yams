@@ -30,7 +30,8 @@ function startGame() {
   numPlayers=document.getElementById('numPlayers').value;
   if (numPlayers=="")
     numPlayers=2;
-  console.log("players:",numPlayers);
+  console.clear();
+  console.log("NEW GAME: players:",numPlayers);
   for (var iRow=0;iRow<15;iRow++){
     for (var iPlayer=0; iPlayer<numPlayers;iPlayer++) {
       if (iRow==6 || iRow==7 || iRow==13 || iRow==14)
@@ -112,6 +113,10 @@ function drawDice() {
     var thisOne=myDie[i-1];
     newHTML=newHTML+"<img src="+"'" + thisOne.imageName() +"'> ";
     newHTML=newHTML+'  <input type="checkbox" name="DiceTwo" class="diceCheck" value=""';
+    if (throwNumber==0) {
+     console.log("DISABLING CHECBOX: drawing dice, throwNumber",throwNumber);
+     newHTML=newHTML+" disabled ";
+    }
     if (thisOne.isLocked) {
       newHTML=newHTML+' checked="checked"';
     }
@@ -130,7 +135,6 @@ function drawScoreBoard() {
 
 //  newHTML=newHTML+"     <th scope ='col'>Player 1</th>     <th scope ='col'>Player 2</th>     <th scope ='col'>Player 3</th>     <th scope ='col'>Player 4</th>   </tr>";
 //{index:1, rowText:"1s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
-  console.log(Object.keys(scoreboard));
   for (var iRow=0;iRow<=14;iRow++) {
     if (iRow==6 || iRow==7 || iRow==13 || iRow==14) {
       newHTML=newHTML+"<tr class='total'>     <th scope='row'>";
@@ -155,14 +159,7 @@ function drawScoreBoard() {
       okToScore=scoreboard[iRow].scores[currentPlayer-1]==-1;
       }
    //special check to disable high if score not greater than a low
-   var dt=dieTotal();
-   if (iRow==10 &&  dt<=scoreboard[11].scores[currentPlayer-1]) {
-        okToScore=false;
-      }
-   //disable low if not lower than high
-   if (iRow==11 &&  scoreboard[10].scores[currentPlayer-1]!=-1 && dt>=scoreboard[10].scores[currentPlayer-1]) {
-        okToScore=false;
-      }
+
      if (okToScore) {
          newHTML=newHTML+"<td>  <input type='radio' name='scorechoice' value ='"  + scoreboard[iRow].rowText+"'/> ";
      }
@@ -205,16 +202,15 @@ function turnOver() {
 
 
 function diceThrow() {
-  drawScoreBoard();
-  console.log("diceThrow ",throwNumber);
+   drawScoreBoard();
   captureLockStatus(); // get the locks first
   for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
     thisOne.throw();
-    drawDice();
     }
-  drawScoreBoard();
 throwNumber++; //increment the number of the throw
+drawDice();
+drawScoreBoard();
 if (throwNumber==3) {
    turnOver();
  }
@@ -378,10 +374,15 @@ drawDice();
     case "High":
       index=11;
       thisScore=dieTotal();
+      //Set to zero if <= Low
+      if (thisScore<=scoreboard[11].scores[currentPlayer-1])
+        thisScore=0;
       break;
     case "Low":
       index=12;
       thisScore=dieTotal();
+      if (scoreboard[10].scores[currentPlayer-1]!=-1 && thisScore>=scoreboard[10].scores[currentPlayer-1])
+        thisScore=0;
       break;
     case "Yams":
       index=13;
@@ -390,7 +391,7 @@ drawDice();
         }
       break;
    }
-     scoreboard[index-1].scores[currentPlayer-1]=thisScore;
+  scoreboard[index-1].scores[currentPlayer-1]=thisScore;
 
 calcTotals();
 drawScoreBoard();
@@ -399,6 +400,7 @@ drawScoreBoard();
   if (currentPlayer>numPlayers) {
     currentRound++;
     if (currentRound>11) {
+        drawScoreBoard();
         alert("Game Over")
     }
     currentPlayer=1;
@@ -422,9 +424,6 @@ function calcTotals() {
               belowTheLine[iPlayer]=belowTheLine[iPlayer]+scoreboard[i].scores[iPlayer];
             }
         }
-     console.log("Scoring this round");
-     console.log("ABL:",aboveTheLine);
-     console.log("BTL:",belowTheLine);
 
      // now update bonus
     for (var i=0;i<numPlayers;i++) {
