@@ -96,6 +96,16 @@ function initialisePlay() {
   });*/
 }
 
+function toggleDice(i) {
+// Change the lock status for dice i 1..5
+ if (throwNumber>0) {
+  myDie[i-1].isLocked=!myDie[i-1].isLocked;
+// I need to check the relevant checkbox
+  var els = document.getElementsByClassName('diceCheck');
+  els[i-1].checked=myDie[i-1].isLocked;
+  }
+}
+
 function captureLockStatus() {
   // start HERE next time to scan the checkbutton status and update isLocked
   var els = document.getElementsByClassName('diceCheck');
@@ -111,7 +121,10 @@ function drawDice() {
   var newHTML="";
   for (var i=1; i<=numDice;i++) {
     var thisOne=myDie[i-1];
-    newHTML=newHTML+"<img src="+"'" + thisOne.imageName() +"'> ";
+    newHTML=newHTML+"<input type='image' src='" + thisOne.imageName()+"'";
+    newHTML=newHTML+" onclick=toggleDice("+i+") />";
+    console.log("Check out",newHTML);
+//    newHTML=newHTML+"<img src="+"'" + thisOne.imageName() +"'> ";
     newHTML=newHTML+'  <input type="checkbox" name="DiceTwo" class="diceCheck" value=""';
     if (throwNumber==0) {
      console.log("DISABLING CHECBOX: drawing dice, throwNumber",throwNumber);
@@ -197,7 +210,7 @@ function turnOver() {
   myDie.sort(compare);
   drawDice();
   document.getElementById('throw').disabled=true;
-  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+" - please score your turn";
+  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+ ": Total="+dieTotal()+" - please score your turn";
 }
 
 
@@ -215,7 +228,9 @@ if (throwNumber==3) {
    turnOver();
  }
   else
-  {  document.getElementById('statusBox').innerHTML="player "+currentPlayer+":that was throw" + throwNumber;
+  {  var myStr="Player "+currentPlayer+": That was throw" + throwNumber;
+     myStr=myStr+ ". Total="+dieTotal();
+     document.getElementById('statusBox').innerHTML=myStr;
 }
 }
 
@@ -233,7 +248,7 @@ function diceReset() {
     els[i].checked=false;
   }
   drawDice();
-  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+" press throw to start";
+  document.getElementById('statusBox').innerHTML="Player " + currentPlayer+":  Press throw to start";
 }
 
 function keyUp(event) {
