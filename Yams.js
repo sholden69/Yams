@@ -2,7 +2,7 @@
 var myDie=[];
 var numDice=5;
 var throwNumber=0; //this will go from 1..3
-var numPlayers=2;
+var numPlayers=1;
 var currentPlayer=1;
 var currentRound=1;
 var scoreboard;
@@ -29,7 +29,7 @@ function startGame() {
 
   numPlayers=document.getElementById('numPlayers').value;
   if (numPlayers=="")
-    numPlayers=2;
+    numPlayers=1;
   console.clear();
   console.log("NEW GAME: players:",numPlayers);
   for (var iRow=0;iRow<15;iRow++){
