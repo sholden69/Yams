@@ -238,6 +238,7 @@ if (throwNumber==3) {
 function diceReset() {
   throwNumber=0;
   document.getElementById('throw').disabled=false;
+  document.getElementById('score').disabled=false;
   //reset all the locks on the checkboxed - NOT WORKING
   for (var i=0;i<numDice; i++) {
     myDie[i].isLocked=false;
@@ -322,6 +323,7 @@ function dieTotal() {
 function isYams() {
 //-- returns true if the hand is Yams.
 var myDig=myDie[0].value;
+
 for (var i=1;i<numDice; i++) {
   if (myDie[i].value!=myDig)
     return false;
@@ -335,6 +337,12 @@ return true;
 function scoreTurn() {
   // Takes the current dice and settings from the scorechoice div and updates scoreboard = [
 //{index:1, rowText:"1s", sc1:-1, sc2:-1, sc3:-1, sc4:-1},
+
+// stop gap for inability to disable score button
+if (myDie[0].value==0) {
+   console.log();("scoring blank turn");
+    return;
+  }
 
 myDie.sort(compare);
 drawDice();
@@ -417,6 +425,10 @@ drawScoreBoard();
     if (currentRound>11) {
         drawScoreBoard();
         alert("Game Over")
+        document.getElementById('throw').disabled=true;
+        document.getElementById('score').disabled=true;
+        return;
+        console.log("Game over, disabling throw and score");
     }
     currentPlayer=1;
 }
