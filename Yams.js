@@ -414,7 +414,12 @@ drawDice();
         }
       break;
    }
-  scoreboard[index-1].scores[currentPlayer-1]=thisScore;
+// Confirm a zero score
+if ((thisScore==0) && !confirm('score?')) {
+  return;
+}
+
+scoreboard[index-1].scores[currentPlayer-1]=thisScore;
 
 calcTotals();
 drawScoreBoard();
