@@ -415,7 +415,7 @@ drawDice();
       break;
    }
 // Confirm a zero score
-if ((thisScore==0) && !confirm('score?')) {
+if ((thisScore==0) && !confirm('score zero?')) {
   return;
 }
 
