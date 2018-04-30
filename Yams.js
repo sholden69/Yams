@@ -414,8 +414,8 @@ drawDice();
         }
       break;
    }
-// Confirm a zero score
-if ((thisScore==0) && !confirm('score zero?')) {
+// Confirm a zero score on all but the last go
+if ((currentRound<11) && (thisScore==0) && !confirm('score zero?')) {
   return;
 }
 
